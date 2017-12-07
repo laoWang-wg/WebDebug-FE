@@ -41,7 +41,7 @@
                <el-dialog title="编辑" :visible.sync="dialogVisible">
                    <div class="dialog-con clearfix" v-for="(v,k,index) of dialogContent">
                       <div>{{k}}:</div>
-                      <div contenteditable class="div-input" @blur="changeValue(k,index)">{{v}}</div>
+                      <div contenteditable class="div-input" @focus="getVal(k,index)" @blur="changeValue(k,index)">{{v}}</div>
                    </div>
                    <div class="btn-box">
                        <el-button @click="editConfirm()" size="mini" type="primary">确定</el-button>
@@ -88,6 +88,7 @@
                     page: 'gdfgdf',
                     delay: 0
                 }],
+                tempVal: '',
                 dialogContent: {},
                 dialogVisible: false,
             }
@@ -108,16 +109,21 @@
             edit(row){
                 this.dialogContent = row
                 this.dialogVisible = true
-                console.log(row)
             },
             del(index, scope){
                 this.tableData.splice(index, 1)
             },
+            getVal(k,index){
+                var nodeObj = document.querySelectorAll(".div-input")[index]
+                this.tempVal = nodeObj.innerHTML
+            },
             changeValue(k,index){
                 var nodeObj = document.querySelectorAll(".div-input")[index]
                 var val = nodeObj.innerHTML
-                this.dialogContent[k] = val
-                console.log(this.dialogContent[k])
+                if(this.tempVal != val){
+                    this.dialogContent[k] = val
+                    console.log(this.dialogContent[k])
+                }
             },
             editConfirm(){
                 console.log(this.dialogContent)
