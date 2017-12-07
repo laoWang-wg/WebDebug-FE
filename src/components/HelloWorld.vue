@@ -37,6 +37,17 @@
                </el-tab-pane>
                <el-tab-pane label="tab2" name="second">tab2</el-tab-pane>
                <el-tab-pane label="tab3" name="third">tab3</el-tab-pane>
+
+               <el-dialog title="编辑" :visible.sync="dialogVisible">
+                   <div class="dialog-con clearfix" v-for="(v,k,index) of dialogContent">
+                      <div>{{k}}:</div>
+                      <div contenteditable class="div-input" @blur="changeValue(k,index)">{{v}}</div>
+                   </div>
+                   <div class="btn-box">
+                       <el-button @click="editConfirm()" size="mini" type="primary">确定</el-button>
+                       <el-button @click="dialogVisible = false" size="mini">取消</el-button>
+                   </div>
+               </el-dialog>
            </el-tabs>
        </div>
     </div>
@@ -77,6 +88,8 @@
                     page: 'gdfgdf',
                     delay: 0
                 }],
+                dialogContent: {},
+                dialogVisible: false,
             }
         },
         methods: {
@@ -93,11 +106,24 @@
                 this.currentIndex2 = index
             },
             edit(row){
+                this.dialogContent = row
+                this.dialogVisible = true
                 console.log(row)
             },
             del(index, scope){
                 this.tableData.splice(index, 1)
-            }
+            },
+            changeValue(k,index){
+                var nodeObj = document.querySelectorAll(".div-input")[index]
+                var val = nodeObj.innerHTML
+                this.dialogContent[k] = val
+                console.log(this.dialogContent[k])
+            },
+            editConfirm(){
+                console.log(this.dialogContent)
+                this.dialogVisible = false
+            },
+
         },
     }
 </script>
@@ -165,6 +191,26 @@
                 .item{
                     margin-bottom: 18px;
                 }
+            }
+            .dialog-con{
+                padding: 4px 24px;
+                &>div{
+                    float: left;
+                }
+                .div-input{
+                    min-width: 150px;
+                    border: 1px solid #eee;
+                    padding: 2px 4px;
+                    border-radius: 4px;
+                }
+                &>div:first-child{
+                    width: 50px;
+                    margin-right: 10px;
+                }
+            }
+            .btn-box{
+                padding-top: 15px;
+                padding-left: 100px;
             }
         }
     }
