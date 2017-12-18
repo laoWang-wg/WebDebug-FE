@@ -9,7 +9,7 @@
                    <el-button type="primary" @click="search">Query</el-button>
                    <div class="card-content clear">
                        <div class="list1 list">
-                           <span>list-1</span>
+                           <span>Databases</span>
                            <ul>
                                <li v-for="(item,index) in list1" :key="item" @click.prevent="choseList1(index)"
                                  :class="index == currentIndex1 ? 'li-active' : ''">{{"列表"+item}}</li>
@@ -23,6 +23,9 @@
                            </ul>
                        </div>
                        <div class="table-list">
+                           <div class="add-box">
+                                <span>添加<i class="el-icon-plus"></i></span>
+                           </div>
                            <el-table :data="tableData" style="width: 100%" border stripe size="mini">
                                <el-table-column v-for="(v,k,tIndex) in tableData[0]" :key="v" :label="k" :prop="k"></el-table-column>
                                <el-table-column label="操作" fixed="right" width="100">
@@ -39,14 +42,19 @@
                <el-tab-pane label="tab3" name="third">tab3</el-tab-pane>
 
                <el-dialog title="编辑" :visible.sync="dialogVisible">
-                   <div class="dialog-con clearfix" v-for="(v,k,index) of dialogContent">
+                   <!-- <div class="dialog-con clearfix" v-for="(v,k,index) of dialogContent">
                       <div>{{k}}:</div>
                       <div contenteditable class="div-input" @focus="getVal(k,index)" @blur="changeValue(k,index)">{{v}}</div>
                    </div>
                    <div class="btn-box">
                        <el-button @click="editConfirm()" size="mini" type="primary">确定</el-button>
                        <el-button @click="dialogVisible = false" size="mini">取消</el-button>
-                   </div>
+                   </div> -->
+                   <el-form ref="from" :model="dialogContent" label-width="60px">
+                       <el-form-item v-for="(v,k) of dialogContent" :key="k+v" :label="k" :props="v">
+                            <el-input v-bind:value="dialogContent[k]" @blur="changeInputValue" @focus="getKey(k)" :autofocus="true"></el-input>
+                       </el-form-item>
+                   </el-form>
                </el-dialog>
            </el-tabs>
        </div>
@@ -89,13 +97,20 @@
                     delay: 0
                 }],
                 tempVal: '',
-                dialogContent: {},
+                dialogContent: {
+                    id: 2,
+                    name: 'www',
+                    page: 'sdfsfsdafsadfsdfasd',
+                    delay: 0
+                },
                 dialogVisible: false,
+                tempIuputValue: '',
             }
         },
         methods: {
             handleClick(tab, event){
-                console.log(tab, event)
+                console.info('tab')
+                // console.log(tab, event)
             },
             search(){
                 alert(this.searchContent)
@@ -129,6 +144,12 @@
                 console.log(this.dialogContent)
                 this.dialogVisible = false
             },
+            getKey(k){
+                this.tempKey = k
+            },
+            changeInputValue(e){
+                this.dialogContent[this.tempKey] = e.target.value
+            }
 
         },
     }
@@ -190,6 +211,12 @@
                     float: left;
                     width: 70%;
                     padding-top: 15px;
+                    .add-box{
+                        text-align: right;
+                        &>span{
+                            cursor: pointer;
+                        }
+                    }
                 }
                 .text{
                     font-size: 14px;
